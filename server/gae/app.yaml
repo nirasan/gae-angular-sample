@@ -2,5 +2,11 @@ runtime: go
 api_version: go1.8
 
 handlers:
+- url: /client/(.*\.(gif|png|jpeg|jpg|css|js|ico))$
+  static_files: client/\1
+  upload: client/(.*)
+- url: /client/(.*)
+  static_files: client/index.html
+  upload: client/index.html
 - url: /.*
   script: _go_app
