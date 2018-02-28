@@ -53,3 +53,4 @@ testem.log
 
 
 server/gae/client/
+server/gae/secret.yaml

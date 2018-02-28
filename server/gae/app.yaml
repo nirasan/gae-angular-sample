@@ -10,3 +10,6 @@ handlers:
   upload: client/index.html
 - url: /.*
   script: _go_app
+
+includes:
+- secret.yaml
