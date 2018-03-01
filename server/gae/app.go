@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/labstack/echo"
 	"net/http"
+	"github.com/nirasan/gae-angular-sample/server/app"
 )
 
 func init() {
@@ -12,6 +13,9 @@ func init() {
 
 	// ルート定義
 	e.GET("/hello", helloHandler)
+
+	e.GET("/oauth/start", app.OauthStartHandler)
+	e.GET("/oauth/callback", app.OauthCallbackHandler)
 
 	// 全リクエストを echo で処理する
 	http.Handle("/", e)
