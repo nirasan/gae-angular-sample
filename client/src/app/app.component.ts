@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient} from '@angular/common/http';
 
-interface helloResonse {
+interface HelloResonse {
   Message: string
 }
 
@@ -14,8 +14,12 @@ export class AppComponent {
   title = 'app';
 
   constructor(private http: HttpClient) {
-    this.http.get<helloResonse>("/hello?name=bob").subscribe(
+    this.http.get<HelloResonse>('/hello?name=bob').subscribe(
       res => console.log(res)
     );
+  }
+
+  onClickLogin() {
+    location.href = '/oauth/start';
   }
 }
