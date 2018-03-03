@@ -1,19 +1,19 @@
 package app
 
 import (
+	"encoding/json"
+	"errors"
+	"github.com/labstack/echo"
+	"github.com/satori/go.uuid"
+	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"github.com/labstack/echo"
-	"os"
-	"net/http"
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/log"
 	"google.golang.org/appengine/datastore"
+	"google.golang.org/appengine/log"
 	"io/ioutil"
-	"encoding/json"
-	"github.com/satori/go.uuid"
-	"errors"
-	"golang.org/x/net/context"
+	"net/http"
+	"os"
 )
 
 var cookieNameState = "STATE"
@@ -24,9 +24,9 @@ func OauthStartHandler(e echo.Context) error {
 	// ハンドラ間での値の引き回しは Cookie を利用する
 	state := uuid.NewV4().String()
 	e.SetCookie(&http.Cookie{
-		Name: cookieNameState,
+		Name:  cookieNameState,
 		Value: state,
-		Path: "/",
+		Path:  "/",
 	})
 
 	c := createOauth2Config()
@@ -70,7 +70,9 @@ func OauthCallbackHandler(e echo.Context) error {
 		return err
 	}
 	log.Debugf(ctx, "userinfo: %v", string(data))
-	userinfo := struct {Sub string `json:"sub"`}{}
+	userinfo := struct {
+		Sub string `json:"sub"`
+	}{}
 	if err := json.Unmarshal(data, &userinfo); err != nil {
 		return err
 	}

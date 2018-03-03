@@ -2,13 +2,13 @@ package main
 
 import (
 	"github.com/labstack/echo"
-	"net/http"
 	"github.com/nirasan/gae-angular-sample/server/app"
+	"net/http"
 )
 
 func init() {
-    // 軽量なウェブアプリケーションフレームワーク echo を使う
-    // 素の net/http に比べてパラメータの bind や Json の出力を便利になる
+	// 軽量なウェブアプリケーションフレームワーク echo を使う
+	// 素の net/http に比べてパラメータの bind や Json の出力を便利になる
 	e := echo.New()
 
 	// ルート定義
@@ -23,7 +23,7 @@ func init() {
 
 // helloHandler のリクエスト
 type helloRequest struct {
-    // クエリストリングの name 要素を受け取る
+	// クエリストリングの name 要素を受け取る
 	Name string `query:"name"`
 }
 
@@ -34,7 +34,7 @@ type helloResponse struct {
 
 // echo のハンドラ型を定義
 func helloHandler(c echo.Context) error {
-    // 入力を受け取って構造体に入れる
+	// 入力を受け取って構造体に入れる
 	req := new(helloRequest)
 	c.Bind(req)
 
