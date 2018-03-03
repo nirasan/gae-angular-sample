@@ -8,10 +8,12 @@ import (
 	"net/http"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
+	"google.golang.org/appengine/datastore"
 	"io/ioutil"
 	"encoding/json"
 	"github.com/satori/go.uuid"
 	"errors"
+	"golang.org/x/net/context"
 )
 
 var cookieNameState = "STATE"
@@ -56,7 +58,7 @@ func OauthCallbackHandler(e echo.Context) error {
 	}
 	log.Debugf(ctx, "token: %v", tok)
 
-	// アクセストークンを使ってユーザー情報を取得する
+	// アクセストークンを使って Google のユーザー情報を取得する
 	client := c.Client(ctx, tok)
 	ret, err := client.Get("https://www.googleapis.com/oauth2/v3/userinfo")
 	if err != nil {
@@ -73,6 +75,24 @@ func OauthCallbackHandler(e echo.Context) error {
 		return err
 	}
 	log.Debugf(ctx, "sub: %v", userinfo.Sub)
+
+	// 取得した Google のユーザー情報でアプリケーションのユーザーがいなければ作成する
+	key := datastore.NewKey(ctx, "User", userinfo.Sub, 0, nil)
+	u := &User{ID: userinfo.Sub}
+	err = datastore.RunInTransaction(ctx, func(ctx context.Context) error {
+		err := datastore.Get(ctx, key, u)
+		if err != nil && err != datastore.ErrNoSuchEntity {
+			log.Debugf(ctx, "user exists: %v", u)
+			return err
+		}
+		_, err = datastore.Put(ctx, key, u)
+		return err
+	}, nil)
+	if err != nil {
+		log.Errorf(ctx, "Transaction failed: %v", err)
+		return err
+	}
+	log.Debugf(ctx, "user created: %v", u)
 
 	return e.JSON(http.StatusOK, struct{ Message string }{"ok"})
 }
