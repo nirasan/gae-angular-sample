@@ -14,9 +14,12 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
+	"github.com/dgrijalva/jwt-go"
 )
 
 var cookieNameState = "STATE"
+var cookieNameToken = "TOKEN"
 
 // Google の OAuth 認証画面へリダイレクトさせるためのハンドラ
 func OauthStartHandler(e echo.Context) error {
@@ -96,7 +99,32 @@ func OauthCallbackHandler(e echo.Context) error {
 	}
 	log.Debugf(ctx, "user created: %v", u)
 
-	return e.JSON(http.StatusOK, struct{ Message string }{"ok"})
+	// アクセストークンを作成して Cookie でわたす
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS512"), jwt.MapClaims{
+		"sub": userinfo.Sub,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	})
+	// HS512 のキー作成
+	//secret := uuid.NewV4()
+	//log.Debugf(ctx, "secret: %s", secret.String())
+	// HS512 のキーを環境変数から取得する
+	secret, err := uuid.FromString(os.Getenv("HMAC_KEY"))
+	if err != nil {
+		return err
+	}
+	signedToken, err := token.SignedString(secret.Bytes())
+	if err != nil {
+		return err
+	}
+	e.SetCookie(&http.Cookie{
+		Name: cookieNameToken,
+		Value: signedToken,
+		Path: "/",
+	})
+	log.Debugf(ctx, "signed token: %v", signedToken)
+
+	http.Redirect(e.Response(), e.Request(), "/client/", 302)
+	return nil
 }
 
 func createOauth2Config() oauth2.Config {
