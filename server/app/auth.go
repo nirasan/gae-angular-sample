@@ -1,15 +1,15 @@
 package app
 
 import (
-	"os"
-	"github.com/satori/go.uuid"
-	"net/http"
-	"github.com/dgrijalva/jwt-go"
-	"strings"
 	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
+	"github.com/satori/go.uuid"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/log"
+	"net/http"
+	"os"
+	"strings"
 )
 
 func GetHMACKey() (uuid.UUID, error) {
@@ -32,7 +32,7 @@ func GetTokenFromRequest(r *http.Request) (*jwt.Token, error) {
 		return nil, errors.New("Invalid auth header")
 	}
 
-	return jwt.Parse(parts[1], func(token *jwt.Token)(interface{}, error) {
+	return jwt.Parse(parts[1], func(token *jwt.Token) (interface{}, error) {
 		id, err := GetHMACKey()
 		if err != nil {
 			return nil, err

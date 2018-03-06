@@ -3,6 +3,7 @@ package app
 import (
 	"encoding/json"
 	"errors"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo"
 	"github.com/satori/go.uuid"
 	"golang.org/x/net/context"
@@ -15,7 +16,6 @@ import (
 	"net/http"
 	"os"
 	"time"
-	"github.com/dgrijalva/jwt-go"
 )
 
 var cookieNameState = "STATE"
@@ -29,11 +29,11 @@ func NewHandler() http.Handler {
 
 	api := e.Group("/api", AuthorizationMiddleware)
 	api.GET("/hello", func(e echo.Context) error {
-		return e.JSON(http.StatusOK, struct{Message string}{"hello authorized"})
+		return e.JSON(http.StatusOK, struct{ Message string }{"hello authorized"})
 	})
 
 	e.GET("/hello", func(e echo.Context) error {
-		return e.JSON(http.StatusOK, struct{Message string}{"hello not authorized"})
+		return e.JSON(http.StatusOK, struct{ Message string }{"hello not authorized"})
 	})
 
 	return e
@@ -132,9 +132,9 @@ func OauthCallbackHandler(e echo.Context) error {
 		return err
 	}
 	e.SetCookie(&http.Cookie{
-		Name: cookieNameToken,
+		Name:  cookieNameToken,
 		Value: signedToken,
-		Path: "/",
+		Path:  "/",
 	})
 	log.Debugf(ctx, "signed token: %v", signedToken)
 
