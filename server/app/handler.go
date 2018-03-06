@@ -21,6 +21,15 @@ import (
 var cookieNameState = "STATE"
 var cookieNameToken = "TOKEN"
 
+func NewHandler() http.Handler {
+	e := echo.New()
+
+	e.GET("/oauth/start", OauthStartHandler)
+	e.GET("/oauth/callback", OauthCallbackHandler)
+
+	return e
+}
+
 // Google の OAuth 認証画面へリダイレクトさせるためのハンドラ
 func OauthStartHandler(e echo.Context) error {
 	// CSRF 対策にランダムな文字列を付与してコールバックの際に検証する
