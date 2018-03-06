@@ -27,6 +27,15 @@ func NewHandler() http.Handler {
 	e.GET("/oauth/start", OauthStartHandler)
 	e.GET("/oauth/callback", OauthCallbackHandler)
 
+	api := e.Group("/api", AuthorizationMiddleware)
+	api.GET("/hello", func(e echo.Context) error {
+		return e.JSON(http.StatusOK, struct{Message string}{"hello authorized"})
+	})
+
+	e.GET("/hello", func(e echo.Context) error {
+		return e.JSON(http.StatusOK, struct{Message string}{"hello not authorized"})
+	})
+
 	return e
 }
 
@@ -113,15 +122,12 @@ func OauthCallbackHandler(e echo.Context) error {
 		"sub": userinfo.Sub,
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	})
-	// HS512 のキー作成
-	//secret := uuid.NewV4()
-	//log.Debugf(ctx, "secret: %s", secret.String())
-	// HS512 のキーを環境変数から取得する
-	secret, err := uuid.FromString(os.Getenv("HMAC_KEY"))
+	hmackey, err := GetHMACKey()
 	if err != nil {
 		return err
 	}
-	signedToken, err := token.SignedString(secret.Bytes())
+	log.Debugf(ctx, "HMAC_KEY: %s", hmackey.String())
+	signedToken, err := token.SignedString(hmackey.Bytes())
 	if err != nil {
 		return err
 	}
