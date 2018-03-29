@@ -112,7 +112,7 @@ func TodoDeleteHandler(e echo.Context) error {
 		return err
 	}
 
-	e.JSON(http.StatusOK, t)
+	e.NoContent(http.StatusOK)
 
 	return nil
 }
