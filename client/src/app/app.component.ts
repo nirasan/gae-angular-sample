@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
+import {AuthService} from './auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,34 +10,31 @@ import {CookieService} from 'ngx-cookie-service';
 })
 export class AppComponent {
   title = 'app';
-  token: string;
 
-  constructor(private http: HttpClient, private cookie: CookieService) {
-    this.token = this.cookie.get('TOKEN');
+  constructor(private http: HttpClient, private auth: AuthService) {
   }
 
   isLoggedIn(): boolean {
-    return this.token !== '';
+    return this.auth.isLoggedIn();
   }
 
   logout() {
-    this.cookie.delete('TOKEN');
-    this.token = '';
+    this.auth.logout();
   }
 
   onClickLogin() {
-    location.href = '/oauth/start';
+    this.auth.login();
   }
 
   onClickAuthrized() {
     this.http.get('/api/hello', {
-      headers: new HttpHeaders({'Authorization': 'Bearer ' + this.token})
+      headers: this.auth.createAuthorizationHeader()
     }).subscribe(r => console.log(r));
   }
 
   onClickNotAuthrized() {
     this.http.get('/hello', {
-      headers: new HttpHeaders({'Authorization': 'Bearer ' + this.token})
+      headers: this.auth.createAuthorizationHeader()
     }).subscribe(r => console.log(r));
   }
 }
