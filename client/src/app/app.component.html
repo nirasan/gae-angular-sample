@@ -1,3 +1,8 @@
-<button (click)="onClickLogin()">LOGIN</button>
-<button (click)="onClickAuthrized()">AUTHORIZED</button>
-<button (click)="onClickNotAuthrized()">NOT AUTHORIZED</button>
+<ng-container *ngIf="isLoggedIn(); else isNotLoggedIn">
+  <button (click)="onClickAuthrized()">AUTHORIZED</button>
+  <button (click)="onClickNotAuthrized()">NOT AUTHORIZED</button>
+  <button (click)="logout()">LOGOUT</button>
+</ng-container>
+<ng-template #isNotLoggedIn>
+  <button (click)="onClickLogin()">LOGIN</button>
+</ng-template>
