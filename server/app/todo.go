@@ -6,6 +6,7 @@ import (
 	"google.golang.org/appengine/datastore"
 	"net/http"
 	"errors"
+	"strconv"
 )
 
 type Todo struct {
@@ -99,20 +100,25 @@ func TodoDeleteHandler(e echo.Context) error {
 		return err
 	}
 
+	id, err := strconv.ParseInt(e.Param("id"), 10, 64)
+	if err != nil {
+		return err
+	}
+
 	t := new(Todo)
-	if err := e.Bind(t); err != nil {
+	key := datastore.NewKey(ctx, "Todo", "", id, nil)
+	if err := datastore.Get(ctx, key, t); err != nil {
 		return err
 	}
 	if t.UserID != u.ID {
 		return errors.New("invalid owner")
 	}
 
-	key := datastore.NewKey(ctx, "Todo", "", t.ID, nil)
 	if err := datastore.Delete(ctx, key); err != nil {
 		return err
 	}
 
-	e.NoContent(http.StatusOK)
+	e.JSON(http.StatusOK, "{}")
 
 	return nil
 }

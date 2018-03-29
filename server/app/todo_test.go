@@ -162,7 +162,7 @@ func TestTodoDeleteHandler(t *testing.T) {
 	// create aetest instance, request, responce
 	uid := uuid.NewV4().String()
 	id := int64(1)
-	instance, req, res, err := NewRequests("DELETE", "/todo/", strings.NewReader(fmt.Sprintf(`{"id":%d, "user_id":"%s", "content":"updated content"}`, id, uid)))
+	instance, req, res, err := NewRequests("DELETE", fmt.Sprintf("/todo/%d", id), nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -171,6 +171,8 @@ func TestTodoDeleteHandler(t *testing.T) {
 	// create echo context
 	e := echo.New().NewContext(req, res)
 	e.Set("User", &User{ID: uid})
+	e.SetParamNames("id")
+	e.SetParamValues("1")
 
 	// create record
 	ctx := appengine.NewContext(req)

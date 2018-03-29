@@ -21,6 +21,12 @@ func NewHandler() http.Handler {
 		return e.JSON(http.StatusOK, struct{ Message string }{"hello not authorized"})
 	})
 
+	// todo resource
+	api.GET("/todo/", TodoListHandler)
+	api.POST("/todo/", TodoCreateHandler)
+	api.PUT("/todo/", TodoUpdateHandler)
+	api.DELETE("/todo/:id", TodoDeleteHandler)
+
 	return e
 }
 
