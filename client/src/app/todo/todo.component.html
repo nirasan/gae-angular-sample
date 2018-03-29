@@ -7,7 +7,7 @@
     <ng-container *ngFor="let t of todoList">
       <li [class.done]="t.done">
         {{t.content}}
-        <button>TOGGLE</button>
+        <button (click)="toggleDone(t)">TOGGLE</button>
         <button (click)="delete(t)">DELETE</button>
       </li>
     </ng-container>

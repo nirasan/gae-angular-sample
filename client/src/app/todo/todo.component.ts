@@ -33,6 +33,11 @@ export class TodoComponent implements OnInit {
     this.todo.create(t).subscribe(data => this.todoList.push(data));
   }
 
+  toggleDone(t: Todo) {
+    t.done = !t.done;
+    this.todo.update(t).subscribe(tt => console.log(this.todoList));
+  }
+
   delete(t: Todo) {
     this.todoList = this.todoList.filter(tt => tt !== t);
     console.log(this.todoList);
