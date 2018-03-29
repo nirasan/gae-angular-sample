@@ -1,0 +1,15 @@
+<div>
+  <div>
+    <label>Content: <input #newContent /></label>
+    <button (click)="create(newContent.value); newContent.value = ''">add</button>
+  </div>
+  <ul>
+    <ng-container *ngFor="let t of todoList">
+      <li [class.done]="t.done">
+        {{t.content}}
+        <button>TOGGLE</button>
+        <button (click)="delete(t)">DELETE</button>
+      </li>
+    </ng-container>
+  </ul>
+</div>

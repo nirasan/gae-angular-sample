@@ -1,7 +1,10 @@
 <ng-container *ngIf="isLoggedIn(); else isNotLoggedIn">
-  <button (click)="onClickAuthrized()">AUTHORIZED</button>
-  <button (click)="onClickNotAuthrized()">NOT AUTHORIZED</button>
-  <button (click)="logout()">LOGOUT</button>
+  <div>
+    <button (click)="onClickAuthrized()">AUTHORIZED</button>
+    <button (click)="onClickNotAuthrized()">NOT AUTHORIZED</button>
+    <button (click)="logout()">LOGOUT</button>
+  </div>
+  <app-todo></app-todo>
 </ng-container>
 <ng-template #isNotLoggedIn>
   <button (click)="onClickLogin()">LOGIN</button>
