@@ -23,7 +23,7 @@ export class TodoComponent implements OnInit {
     this.todo.getList().subscribe(data => this.todoList = data || []);
   }
 
-  create(content: string) {
+  createTodo(content: string) {
     const t = {
       id: 0,
       user_id: '',
@@ -33,12 +33,12 @@ export class TodoComponent implements OnInit {
     this.todo.create(t).subscribe(data => this.todoList.push(data));
   }
 
-  toggleDone(t: Todo) {
+  toggleTodoDone(t: Todo) {
     t.done = !t.done;
     this.todo.update(t).subscribe(tt => console.log(this.todoList));
   }
 
-  delete(t: Todo) {
+  deleteTodo(t: Todo) {
     this.todoList = this.todoList.filter(tt => tt !== t);
     console.log(this.todoList);
     this.todo.delete(t).subscribe();

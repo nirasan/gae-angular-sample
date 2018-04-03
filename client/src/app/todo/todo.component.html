@@ -1,14 +1,14 @@
 <div>
   <div>
     <label>Content: <input #newContent /></label>
-    <button (click)="create(newContent.value); newContent.value = ''">add</button>
+    <button (click)="createTodo(newContent.value); newContent.value = ''">add</button>
   </div>
   <ul>
-    <ng-container *ngFor="let t of todoList">
+    <ng-container *ngFor="let t of todoList; let i = index">
       <li [class.done]="t.done">
         {{t.content}}
-        <button (click)="toggleDone(t)">TOGGLE</button>
-        <button (click)="delete(t)">DELETE</button>
+        <input type="checkbox" [value]="t.done" (change)="toggleTodoDone(t)" name="done">
+        <button (click)="deleteTodo(t)">DELETE</button>
       </li>
     </ng-container>
   </ul>
